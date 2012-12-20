@@ -34,7 +34,8 @@ $(document).bind('pageinit', function() {
                 'data-role': 'button',
                 'data-inline': 'true',
                 'data-corners': 'false',
-                'data-mini': 'true'
+                'data-mini': 'true',
+                'data-shadow': 'false'
             })
             .text(clip)
             .on('click', function() {
