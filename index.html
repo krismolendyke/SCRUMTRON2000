@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="web.appcache">
+<html lang="en">
 <head>
     <title>SCRUMTRON2000</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<div data-role="page" data-theme="a">
+<div id="one" data-role="page" data-theme="a">
 
     <div data-role="header">
         <h1>SCRUMTRON2000</h1>
@@ -19,8 +19,37 @@
 
     <div data-role="content" style="padding: 5px;">
         <div id="buttons"></div>
+
+        <div id="cool" style="display: none;">
+            <a href="#two" data-role="button" data-rel="dialog" data-transition="pop" data-corners="false" data-mini="true">Kick up the 4d3d3d3</a>
+        </div>
     </div>
 
+</div>
+
+<div data-role="page" id="two" data-theme="a">
+
+    <div data-role="header">
+        <h1>4d3d3d3 Engage</h1>
+    </div>
+
+    <div data-role="content" data-theme="a">
+        <div id="volume">
+            <div data-role="fieldcontain">
+                <label for="flip-mini" class="ui-hidden-accessible">4d3d3d3:</label>
+                <select name="flip-mini" id="flip-mini" data-role="slider" data-mini="true">
+                    <option value="off">Off</option>
+                    <option value="on">On</option>
+                </select>
+            </div>
+        </div>
+        <div data-role="controlgroup" data-type="horizontal">
+            <button id="up" data-role="button" data-icon="arrow-u">Up</button>
+            <button id="down" data-role="button" data-icon="arrow-d">Down</button>
+        </div>
+
+        <p><a href="#one" data-direction="reverse" data-role="button">Let's hear that jawn!</a></p>
+    </div>
 </div>
 
 </body>

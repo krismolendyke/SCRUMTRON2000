@@ -87,15 +87,44 @@ var Base64Binary = {
     }
 }
 
-$(document).bind('pageinit', function() {
+$(document).bind('pageinit', function(event) {
+    if (event.target.id !== 'one') {
+        return;
+    }
     var audioContext;
     var buttons = [];
+    var fourD3D3D = false;
+    var fourD3D3DValue = 4;
 
     var play = function() {
         var clip = clips[$(this).data('clip')];
 
         if (audioContext && clip.buffer) {
             var bufferSource = audioContext.createBufferSource();
+
+            if (fourD3D3D) {
+                if (fourD3D3DValue < 2) {
+                    fourD3D3DValue = 2;
+                }
+
+                if (fourD3D3DValue > 10) {
+                    fourD3D3DValue = 10;
+                }
+
+                console.log('fourD3D3DValue: ', fourD3D3DValue);
+                for (var i = 1; i < fourD3D3DValue; i += 1) {
+                    var delayNode = audioContext.createDelayNode();
+                    bufferSource.connect(delayNode);
+                    delayNode.connect(audioContext.destination);
+                    delayNode.delayTime.value = 0.25 * i;
+
+                    var gainNode = audioContext.createGainNode();
+                    bufferSource.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    gainNode.gain.value = -0.25 * i;
+                }
+            }
+
             bufferSource.buffer = clip.buffer;
             bufferSource.connect(audioContext.destination);
             bufferSource.noteOn(0);
@@ -108,6 +137,27 @@ $(document).bind('pageinit', function() {
         audioContext = new webkitAudioContext();
     } else if (window.AudioContext) {
         audioContext = new AudioContext();
+    }
+
+    if (audioContext) {
+        $('#cool').show();
+        $('#volume')
+            .on('slidestop', function(event) {
+                if (event.target.value === 'on') {
+                    fourD3D3D = true;
+                } else {
+                    fourD3D3D = false;
+                    fourD3D3DValue = 4;
+                }
+            });
+
+        $('#up').on('click', function() {
+            fourD3D3DValue += 2;
+        });
+
+        $('#down').on('click', function() {
+            fourD3D3DValue -= 2;
+        });
     }
 
     $.each(clips, function(clipName, clipData) {
