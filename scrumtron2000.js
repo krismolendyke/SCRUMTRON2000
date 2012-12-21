@@ -87,14 +87,49 @@ var Base64Binary = {
     }
 }
 
+
 $(document).bind('pageinit', function(event) {
-    if (event.target.id !== 'one') {
+    if (event.target.id !== 'scrumtron2000') {
         return;
     }
+
+    var OGG_PATH = 'static/audio/ogg/';
     var audioContext;
     var buttons = [];
-    var fourD3D3D = false;
-    var fourD3D3DValue = 4;
+    var _4d3d3d3 = {
+        'engaged': false,
+        'factor': 4,
+        'factorDefault': 4,
+        'factorStep': 2,
+        'factorMin': 2,
+        'factorMax': 10,
+        'delayJawn': 0.25,
+        'gainJawn': -0.25
+    };
+
+    var kickUpThe4d3d3d3 = function(bufferSource) {
+        var delayNode, gainNode;
+
+        if (_4d3d3d3.factor < _4d3d3d3.factorMin) {
+            _4d3d3d3.factor = _4d3d3d3.factorMin;
+        }
+
+        if (_4d3d3d3.factor > _4d3d3d3.factorMax) {
+            _4d3d3d3.factor = _4d3d3d3.factorMax;
+        }
+
+        for (var i = 1; i <= _4d3d3d3.factor; i += 1) {
+            delayNode = audioContext.createDelayNode();
+            bufferSource.connect(delayNode);
+            delayNode.connect(audioContext.destination);
+            delayNode.delayTime.value = _4d3d3d3.delayJawn * i;
+
+            gainNode = audioContext.createGainNode();
+            bufferSource.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            gainNode.gain.value = _4d3d3d3.gainJawn * i;
+        }
+    };
 
     var play = function() {
         var clip = clips[$(this).data('clip')];
@@ -102,27 +137,8 @@ $(document).bind('pageinit', function(event) {
         if (audioContext && clip.buffer) {
             var bufferSource = audioContext.createBufferSource();
 
-            if (fourD3D3D) {
-                if (fourD3D3DValue < 2) {
-                    fourD3D3DValue = 2;
-                }
-
-                if (fourD3D3DValue > 10) {
-                    fourD3D3DValue = 10;
-                }
-
-                console.log('fourD3D3DValue: ', fourD3D3DValue);
-                for (var i = 1; i < fourD3D3DValue; i += 1) {
-                    var delayNode = audioContext.createDelayNode();
-                    bufferSource.connect(delayNode);
-                    delayNode.connect(audioContext.destination);
-                    delayNode.delayTime.value = 0.25 * i;
-
-                    var gainNode = audioContext.createGainNode();
-                    bufferSource.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    gainNode.gain.value = -0.25 * i;
-                }
+            if (_4d3d3d3.engaged) {
+                kickUpThe4d3d3d3(bufferSource);
             }
 
             bufferSource.buffer = clip.buffer;
@@ -133,46 +149,8 @@ $(document).bind('pageinit', function(event) {
         }
     };
 
-    if (window.webkitAudioContext) {
-        audioContext = new webkitAudioContext();
-    } else if (window.AudioContext) {
-        audioContext = new AudioContext();
-    }
-
-    if (audioContext) {
-        $('#cool').show();
-        $('#volume')
-            .on('slidestop', function(event) {
-                if (event.target.value === 'on') {
-                    fourD3D3D = true;
-                } else {
-                    fourD3D3D = false;
-                    fourD3D3DValue = 4;
-                }
-            });
-
-        $('#up').on('click', function() {
-            fourD3D3DValue += 2;
-        });
-
-        $('#down').on('click', function() {
-            fourD3D3DValue -= 2;
-        });
-    }
-
-    $.each(clips, function(clipName, clipData) {
-        if (audioContext) {
-            var arrayBuffer = Base64Binary.decodeArrayBuffer(clipData.base64);
-            audioContext.decodeAudioData(arrayBuffer, function(audioData) {
-                clipData.buffer = audioData;
-            });
-        } else {
-            var audio = new Audio(clipName + '.ogg');
-            audio.preload = 'auto';
-            clipData.audio = audio;
-        }
-
-        buttons.push($('<button>')
+    var createButton = function(clipName) {
+        return $('<button>')
             .data('clip', clipName)
             .attr({
                 'data-role': 'button',
@@ -182,8 +160,49 @@ $(document).bind('pageinit', function(event) {
                 'data-shadow': 'false'
             })
             .text(clipName)
-            .on('click', play));
-    });
+            .on('click', play);
+    };
+
+    if (window.webkitAudioContext) {
+        audioContext = new webkitAudioContext();
+    } else if (window.AudioContext) {
+        audioContext = new AudioContext();
+    }
+
+    if (audioContext) {
+        $('#kickUpThe4d3d3d3').show();
+        $('#4d3d3d3Engaged').on('slidestop', function(event) {
+            if (event.target.value === 'on') {
+                _4d3d3d3.engaged = true;
+            } else {
+                _4d3d3d3.engaged = false;
+                _4d3d3d3.factor = _4d3d3d3.factorDefault;
+            }
+        });
+
+        $('#kickItUp').on('click', function() {
+            _4d3d3d3.factor += _4d3d3d3.factorStep;
+        });
+
+        $('#LAME').on('click', function() {
+            _4d3d3d3.factor -= _4d3d3d3.factorStep;
+        });
+
+        $.each(clips, function(clipName, clipData) {
+            var arrayBuffer = Base64Binary.decodeArrayBuffer(clipData.base64);
+            audioContext.decodeAudioData(arrayBuffer, function(audioData) {
+                clipData.buffer = audioData;
+            });
+            buttons.push(createButton(clipName));
+        });
+    } else {
+        $.each(clips, function(clipName, clipData) {
+            var audio = new Audio(OGG_PATH + clipName + '.ogg');
+            audio.preload = 'auto';
+            clipData.audio = audio;
+            buttons.push(createButton(clipName));
+        });
+    }
 
     $('#buttons').append(buttons).trigger('create');
 });
