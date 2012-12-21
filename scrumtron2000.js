@@ -107,6 +107,76 @@ $(document).bind('pageinit', function(event) {
         'gainJawn': -0.25
     };
 
+    var quickKeySet = function() {
+        document.body.onkeypress = function(event){
+        var keyCode = ('which' in event) ? event.which : event.keyCode;
+        console.log("Keycode is:" + keyCode);
+        var b = document.getElementsByClassName("ui-btn-hidden");
+            switch(keyCode){
+                case 113:
+                    b[0].click();
+                break;
+                case 119:
+                    b[1].click();
+                break;
+                case 101:
+                    b[2].click();
+                break;
+                case 114:
+                    b[3].click();
+                break;
+                case 116:
+                    b[4].click();
+                break;
+                case 121:
+                    b[5].click();
+                break;
+                case 117:
+                    b[6].click();
+                break;
+                case 105:
+                    b[7].click();
+                break;
+                case 111:
+                    b[8].click();
+                break;
+                case 112:
+                    b[9].click();
+                break;
+                case 97:
+                    b[10].click();
+                break;
+                case 115:
+                    b[11].click();
+                break;
+                case 100:
+                    b[13].click();
+                break;
+                case 102:
+                    b[14].click();
+                break;
+                case 103:
+                    b[15].click();
+                break;
+                case 104:
+                    b[16].click();
+                break;
+                case 106:
+                    b[17].click();
+                break;
+                case 107:
+                    b[18].click();
+                break;
+                case 108:
+                    b[19].click();
+                break;
+                case 59:
+                    b[20].click();
+                break;
+            }
+        };
+    };
+
     var kickUpThe4d3d3d3 = function(bufferSource) {
         var delayNode, gainNode;
 
@@ -205,4 +275,7 @@ $(document).bind('pageinit', function(event) {
     }
 
     $('#buttons').append(buttons).trigger('create');
+
+    quickKeySet();
+    
 });
