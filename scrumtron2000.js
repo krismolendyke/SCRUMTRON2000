@@ -108,7 +108,7 @@ $(document).bind('pageinit', function(event) {
     };
 
     var kickUpThe4d3d3d3 = function(bufferSource) {
-        var delayNode, gainNode;
+        var delay, gain;
 
         if (_4d3d3d3.factor < _4d3d3d3.factorMin) {
             _4d3d3d3.factor = _4d3d3d3.factorMin;
@@ -119,15 +119,16 @@ $(document).bind('pageinit', function(event) {
         }
 
         for (var i = 1; i <= _4d3d3d3.factor; i += 1) {
-            delayNode = audioContext.createDelayNode();
-            bufferSource.connect(delayNode);
-            delayNode.connect(audioContext.destination);
-            delayNode.delayTime.value = _4d3d3d3.delayJawn * i;
+            gain = audioContext.createGain();
+            gain.connect(audioContext.destination);
+            gain.gain.value = _4d3d3d3.gainJawn * i;
 
-            gainNode = audioContext.createGainNode();
-            bufferSource.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            gainNode.gain.value = _4d3d3d3.gainJawn * i;
+            delay = audioContext.createDelay();
+            delay.connect(gain);
+            delay.delayTime.value = _4d3d3d3.delayJawn * i;
+
+            bufferSource.connect(gain);
+            bufferSource.connect(delay);
         }
     };
 
