@@ -144,7 +144,7 @@ $(document).bind('pageinit', function(event) {
 
             bufferSource.buffer = clip.buffer;
             bufferSource.connect(audioContext.destination);
-            bufferSource.noteOn(0);
+            bufferSource.start();
         } else if (clip.audio){
             clip.audio.cloneNode().play();
         }
